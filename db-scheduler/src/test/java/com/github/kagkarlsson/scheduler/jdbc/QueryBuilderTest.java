@@ -27,6 +27,32 @@ class QueryBuilderTest {
             .andCondition(stringField("field1", "a"))
             .andCondition(stringField("field2", "b"))
             .getQuery());
+
+    assertNonWhitespaceEquals(
+      "select * from table1 limit 1",
+      selectFromTable("table1").limit(1).getQuery()
+    );
+
+    assertNonWhitespaceEquals(
+      "select * from table1 offset 2",
+      selectFromTable("table1").offset(2).getQuery()
+    );
+
+    assertNonWhitespaceEquals(
+      "select * from table1 limit 1 offset 2",
+      selectFromTable("table1").limit(1).offset(2).getQuery()
+    );
+
+    assertNonWhitespaceEquals(
+      "select * from table1 where field1=? and field2=? order by c1 asc limit 1 offset 2",
+      selectFromTable("table1")
+        .andCondition(stringField("field1", "a"))
+        .andCondition(stringField("field2", "b"))
+        .orderBy("c1 asc")
+        .limit(1)
+        .offset(2)
+        .getQuery()
+    );
   }
 
   private AndCondition stringField(String fieldname, String hasValue) {

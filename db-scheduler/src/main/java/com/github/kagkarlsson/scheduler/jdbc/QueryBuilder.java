@@ -25,6 +25,8 @@ class QueryBuilder {
   private final String tableName;
   private final List<AndCondition> andConditions = new ArrayList<>();
   private Optional<String> orderBy = empty();
+  private Optional<Integer> limit = empty();
+  private Optional<Integer> offset = empty();
 
   QueryBuilder(String tableName) {
     this.tableName = tableName;
@@ -44,6 +46,16 @@ class QueryBuilder {
     return this;
   }
 
+  QueryBuilder limit(int limit) {
+    this.limit = Optional.of(limit);
+    return this;
+  }
+
+  QueryBuilder offset(int offset) {
+    this.offset = Optional.of(offset);
+    return this;
+  }
+
   String getQuery() {
     StringBuilder s = new StringBuilder();
     s.append("select * from ").append(tableName);
@@ -54,6 +66,14 @@ class QueryBuilder {
     }
 
     orderBy.ifPresent(o -> s.append(" order by ").append(o));
+
+    if(limit.isPresent()) {
+      s.append(" limit ").append(this.limit.get());
+    }
+
+    if(offset.isPresent()) {
+      s.append(" offset ").append(this.offset.get());
+    }
 
     return s.toString();
   }
